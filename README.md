@@ -4,11 +4,11 @@ bash scripts to Refresh DNS zone file with nodes provided through chainz.cryptoi
 
 Uses the chainz.cryptoid.info API, crontab and a bind9 DNS server 
  to enable named vSeed seeders to respond to DNS requests for peer node IP's.
- 	This is in lieu of or to compleent SIPA node tracker / seeders.
+ 	This is in lieu of or to complement SIPA node tracker / seeders.
 
 1. Create a DNS zone file for the delegated sub-domain. Suffix this zone.file name with 'HEAD'.
-Ip's will be appended at the end of it to create the zone file named in /etc/bind/named.conf.local
-Must include serial number sentinel line for easy parsing by dnzf++ :
+IP addresses will be appended at the end of it to create the zone file named in /etc/bind/named.conf.local
+Please include a serial number sentinel line for easy parsing by dnzf++ :
                 ; Serial Number (latest on top)
 
 Example file:  dnsseed7.egulden.org.db.HEAD  ; serves as template.  IP's from chainz.cryptoid.info are added at the end of the file
