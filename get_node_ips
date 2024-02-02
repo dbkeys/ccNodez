@@ -1,0 +1,45 @@
+#!/bin/bash
+
+
+# Check if jq is installed ( apt install jq )
+if ! command -v jq > /dev/null; then
+    echo "Error: 'jq' is not installed. Please install it using 'apt install jq'."
+    exit 1
+fi
+
+# Check if a zone file name is provided
+if [ "$#" -lt 1 ]; then
+	echo "Usage: $0 <ticker> // lower case ticker; example: arg, aur, btc, btm, dem, efl, marks"
+	exit 1
+fi
+
+# URL for the HTTP request
+url="https://chainz.cryptoid.info/$1/api.dws?q=nodes"
+
+# File stem to store unique IPv4 addresses
+output_file_stem="$1.IPs"
+##output_file_stem="EFL.IPs"
+
+# Make the HTTP request and store the response in a variable
+response=$(curl -s "$url")
+##echo $response
+
+# Check if the request was successful
+if [ $? -eq 0 ]; then
+    # Extract IPv4 addresses using jq (assuming jq is installed)
+    ipv4_addresses=$(echo "$response" | jq -r '.[].nodes[] | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$"))')
+
+    # Check if there are IPv4 addresses
+    if [ -n "$ipv4_addresses" ]; then
+        unixTime=$(date "+%s")
+        output_file="$output_file_stem.$unixTime.txt"
+        # Remove duplicates and save the unique IPv4 addresses to the output file
+        echo "$ipv4_addresses" | sort -u > "$output_file"
+`       #echo "Unique IP addresses saved to \"$output_file\""
+`       echo $output_file
+    else
+        echo "Error: No valid IPv4 addresses found in the API response."
+    fi
+else
+    echo "Failed to retrieve data from the API."
+fi

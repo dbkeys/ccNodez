@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Check if jq is installed ( apt install jq )
+if ! command -v jq > /dev/null; then
+    echo "Error: 'jq' is not installed. Please install it using 'apt install jq'."
+    exit 1
+fi
+
+# Check if required command-line parameters are provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <delegated_name> <top_level_domain> <ticker>"
+    exit 1
+fi
+
+delegated_name=$1
+top_level_domain=$2
+zone_file="$delegated_name.$top_level_domain.db"
+zone_name="$delegated_name.$top_level_domain"
+zf_path="/etc/bind/zones"
+zfp="$zf_path/$zone_file"
+ticker=$3
+
+cd /etc/bind/zones || exit
+
+# Get fresh IPs using the get_node_ips function (assuming it's defined)
+fresh_ips=$(get_node_ips "$ticker")
+
+# Copy the HEAD file as beginning of the new zone file
+cp "$zone_file.HEAD" "$zone_file"
+
+# Add the fresh IPs to the zone file using the addips command
+/usr/local/bin/addips "$fresh_ips" "$delegated_name" "$zone_file"
+
+# Run dnzf++ on the modified zone file
+/usr/local/bin/dnzf++ "$zone_file"
+
+# Reload the DNS server using rndc
+rndc reload "$zone_name"
+

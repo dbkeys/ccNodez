@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Check if all required parameters are provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <IP address list file> <Delegated DNS name> <DNS zone file>"
+    exit 1
+fi
+
+ip_list_file="$1"
+dns_name="$2"
+dns_zone_file="$3"
+
+# Check if the IP address list file exists
+if [ ! -f "$ip_list_file" ]; then
+    echo "Error: IP address list file not found."
+    exit 1
+fi
+
+# Check if the DNS zone file exists
+if [ ! -f "$dns_zone_file" ]; then
+    echo "Error: DNS zone file not found."
+    exit 1
+fi
+
+# Read the IP addresses from the file and construct the DNS entries
+dns_entries=""
+first_line=true
+while IFS= read -r ip_address; do
+    if [ "$first_line" = true ]; then
+        dns_entries+="$dns_name\tIN\tA\t$ip_address"
+        first_line=false
+    else
+        dns_entries+="\n\t\tIN\tA\t$ip_address"
+    fi
+done < "$ip_list_file"
+
+# Increment the serial number in the DNS zone file
+#sed -i 's/\(.*\)\([0-9]\{10\}\)\(.*\)/\1'"$(date +%Y%m%d%H)"'\3/' "$dns_zone_file"
+
+# Append the DNS entries to the DNS zone file
+echo -e "$dns_entries" >> "$dns_zone_file"
+
+echo "DNS entries added to $dns_zone_file."
+

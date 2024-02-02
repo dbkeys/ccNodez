@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Check that the DNS zone file is provided as a command-line argument
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <zone_file> "
+#   echo "Usage: $0 <zone_file> [comment]"
+    exit 1
+fi
+
+# Check that the DNS zone file exists and is writable
+if [ ! -f "$1" ]; then
+    echo "Error: $1 does not exist"
+    exit 1
+elif [ ! -w "$1" ]; then
+    echo "Error: $1 is not writable"
+    exit 1
+fi
+
+# Get the current time in seconds since the Unix epoch
+current_time=$(date +%s)
+
+# Delete the old line with the previous serial number and insert the new serial number line
+#sed -i '/; Serial Number/d' "$1"
+#sed -i "/; Serial Number/a \\\t$current_time ;serial number" "$1"
+
+# Delete the old line with the previous serial number and insert the new serial number line
+sed -i '/; Serial Number/{n;d}' "$1"
+sed -i "/; Serial Number/a \\\t\t$current_time \t; " "$1"
+#sed -i "/; Serial Number/a \\\t$current_time ;$2" "$1"
+
