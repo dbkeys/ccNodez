@@ -6,7 +6,7 @@ Uses the chainz.cryptoid.info API, crontab and a bind9 DNS server
  to enable named vSeed seeders to respond to DNS requests for peer node IP's.
  	This is in lieu of or to complement SIPA node tracker / seeders.
 
-1. Create a DNS zone file for the delegated sub-domain. Suffix this zone.file name with 'HEAD'.
+1. Create a DNS zone file template for the delegated sub-domain. Suffix this zone.file name with 'HEAD'.
 IP addresses will be appended at the end of it to create the zone file named in /etc/bind/named.conf.local
 Please include a serial number sentinel line for easy parsing by dnzf++ :
                 ; Serial Number (latest on top)
@@ -35,3 +35,21 @@ Top Level Domain:	egulden.org
 
 Example crontab line for egulden, updates zone file every 23 minutes:
 */23 * * * * /usr/local/bin/dnzfresh dnsseed7 egulden.org efl
+
+
+Installation
+---------------------------------------------------
+
+apt install jq			// Debian / Ubuntu
+yum install jq			// CentOS / Alma / Rocky
+
+set the zone file folder path in script 'dnzfresh'
+
+cp -p addips /usr/local/bin
+cp -p get_node_ips /usr/local/bin
+cp -p dnzfresh /usr/local/bin
+cp -p dnzf++ /usr/local/bin
+
+
+
+
