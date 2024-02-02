@@ -2,7 +2,7 @@
 
 bash scripts to Refresh DNS zone file with nodes provided through chainz.cryptoid.info API
 
- 	Uses the chainz.cryptoid.info API, crontab and a bind9 DNS server 
+Uses the chainz.cryptoid.info API, crontab and a bind9 DNS server 
  to enable named vSeed seeders to respond to DNS requests for peer node IP's.
  	This is in lieu of or to compleent SIPA node tracker / seeders.
 
