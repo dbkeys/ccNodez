@@ -32,3 +32,6 @@ Top Level Domain:	egulden.org
 
 6. Automation via crontab is done with the dnzfresh script
 	Usage: dnzfresh <delegated_name> <top_level_domain> <ticker>
+
+Example crontab line for egulden, updates zone file every 23 minutes:
+*/23 * * * * /usr/local/bin/dnzfresh dnsseed7 egulden.org efl
