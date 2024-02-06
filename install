@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cp -p addips /usr/local/bin
+cp -p dnzf++ /usr/local/bin
+cp -p dnzfresh /usr/local/bin
+cp -p get_node_ips /usr/local/bin

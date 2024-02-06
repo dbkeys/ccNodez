@@ -35,3 +35,48 @@ Top Level Domain:	egulden.org
 
 Example crontab line for egulden, updates zone file every 23 minutes:
 */23 * * * * /usr/local/bin/dnzfresh dnsseed7 egulden.org efl
+
+Example setup of delegated sub-domain "seedz.argentum.cc"
+
+1.  Register domain in /etc/bind/named.conf.local
+
+	zone "seedz.argentum.cc" IN {
+		type master;
+		file "/var/named/seedz.argentum.cc.db";
+	}
+
+2. Create zone file HEAD template
+	This bind9 server keeps its zone files in /var/named ...
+	/var/named# cat seedz.argentum.cc.db.HEAD 
+
+		;-----------------------------------------------------------------------------------------
+		; seedz.argentum.cc     - eGulden DNS node seeder
+		;-----------------------------------------------------------------------------------------
+		$ORIGIN argentum.cc.
+		$TTL    4h
+		seedz           IN      SOA     ns2.internam.com.       admin.internam.com. (
+
+				; Serial Number (latest on top)
+				1706841776      ;
+
+				25m             ; Slaves:       * refresh every 25 minutes
+				12m             ;               * if no answer try back first in 12 minutes
+				3d55m           ;               * keep previous info 3 days 55 minutes
+				5m )            ;               * keep trying for new info every 5 minutes
+
+				IN      NS      ns2.internam.com.
+
+						; Sending
+				IN      TXT     "v=spf1 -all" ; ( Not sending at all. )`
+
+		$ORIGIN argentum.cc.
+
+		; This next section is refreshed periodically via crontab running 'dnzfresh' script
+		; obtained from chainz.cryptoid.info via their API, 
+		; seedz.argentum.cc
+		;-----------------------------------------------------------------------------------------------------
+
+3. Install scripts
+	./install
+
+

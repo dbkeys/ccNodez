@@ -1,0 +1,26 @@
+;-----------------------------------------------------------------------------------------
+; <delegated-name>.<domain.tld>	-  DNS seeder
+;-----------------------------------------------------------------------------------------
+$ORIGIN <domain.tld>.
+$TTL    4h
+<delegated-name>		IN	SOA	<name-server>.	<admin@email>. (
+	
+                ; Serial Number (latest on top)
+		1706841776	;
+
+                25m             ; Slaves:       * refresh every 25 minutes
+                12m             ;               * if no answer try back first in 12 minutes
+                3d55m           ;               * keep previous info 3 days 55 minutes
+                5m )            ;               * keep trying for new info every 5 minutes
+
+                IN      NS      <name-server>.
+
+ 				; Sending
+		IN	TXT	"v=spf1 -all" ;	( Not sending at all. )`
+
+$ORIGIN <domain.tld>.
+
+; This next section is refreshed periodically via crontab running 'dnzfresh' script
+; obtained from chainz.cryptoid.info via their API, 
+ <delegated-name>.<domain.tld>
+;-----------------------------------------------------------------------------------------------------
