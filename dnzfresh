@@ -2,7 +2,9 @@
 
 # Check if jq is installed ( apt install jq )
 if ! command -v jq > /dev/null; then
-    echo "Error: 'jq' is not installed. Please install it using 'apt install jq'."
+    echo "Error: 'jq' is not installed. Please install it using :"
+    echo "On Ubuntu/ Debian:  'apt install jq'"
+    echo "On Alma / CentOS / Rocky:  'yum install jq'"
     exit 1
 fi
 
@@ -16,24 +18,26 @@ delegated_name=$1
 top_level_domain=$2
 zone_file="$delegated_name.$top_level_domain.db"
 zone_name="$delegated_name.$top_level_domain"
-zf_path="/etc/bind/zones"
+
+# Make sure to set the correct path for your DNS server here:
+zf_path="/var/named"
 zfp="$zf_path/$zone_file"
 ticker=$3
 
-cd /etc/bind/zones || exit
+cd "$zf_path" || exit
 
-# Get fresh IPs using the get_node_ips function (assuming it's defined)
+# Get fresh IPs using the get_node_ips function
 fresh_ips=$(get_node_ips "$ticker")
 
-# Copy the HEAD file as beginning of the new zone file
+# Copy the HEAD file as beginning of the refreshed zone file
 cp "$zone_file.HEAD" "$zone_file"
 
-# Add the fresh IPs to the zone file using the addips command
+# Append the fresh IPs to the zone file using the addips command
 /usr/local/bin/addips "$fresh_ips" "$delegated_name" "$zone_file"
 
-# Run dnzf++ on the modified zone file
+# Set new serial number on the appended zone file
 /usr/local/bin/dnzf++ "$zone_file"
 
-# Reload the DNS server using rndc
+# Reload the zone file on DNS server 
 rndc reload "$zone_name"
 
