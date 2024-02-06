@@ -80,19 +80,31 @@ Example setup of delegated sub-domain "seedz.argentum.cc"
 	./install
 =======
 
-Installation
+Installation Notes
 ---------------------------------------------------
 
-apt install jq			// Debian / Ubuntu
-yum install jq			// CentOS / Alma / Rocky
+apt install jq			; for  Debian / Ubuntu
+yum install jq			; for  Alma / CentOS / Rocky
 
-set the zone file folder path in script 'dnzfresh'
+Set the zone file folder path in script 'dnzfresh'
 
-cp -p addips /usr/local/bin
-cp -p get_node_ips /usr/local/bin
-cp -p dnzfresh /usr/local/bin
-cp -p dnzf++ /usr/local/bin
+Run 'install' script to:
+	cp -p addips /usr/local/bin
+	cp -p get_node_ips /usr/local/bin
+	cp -p dnzfresh /usr/local/bin
+	cp -p dnzf++ /usr/local/bin
 
+Ubuntu:
+	May have to edit
+		/etc/apparmor.d/usr.sbin.named 
+
+	to allow reading / writing in the zone file folder by adding lines like:
+		 /var/named/ rw,
+		 /var/named/** rw,
+
+	Reload AppArmor:
+		service apparmor reload
+		apparmor_status
 
 
 

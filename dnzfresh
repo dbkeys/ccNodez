@@ -39,5 +39,5 @@ cp "$zone_file.HEAD" "$zone_file"
 /usr/local/bin/dnzf++ "$zone_file"
 
 # Reload the zone file on DNS server 
+echo "rndc reload $zone_name"
 rndc reload "$zone_name"
-
